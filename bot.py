@@ -1,8 +1,29 @@
 import os
+import threading
 import urllib.request
 from google import genai
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+
+from flask import Flask
+
+# יצירת שרת דמה קטן עבור Render
+app = Flask(__name__)
+
+
+@app.route("/")
+def home():
+    return "Bot is running!"
+
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
+
+
+# הרצת השרת בשרשור נפרד כדי לא לחסום את הבוט
+threading.Thread(target=run_web_server, daemon=True).start()
+
 
 # הגדרות מפתחות
 TELEGRAM_BOT_TOKEN = "8657335457:AAFqkFs5rYKrfvhQGD4aUhw5XU-HvI7V9mQ"
